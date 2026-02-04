@@ -50,12 +50,16 @@ async function authFetch(url, options = {}) {
     throw new Error(`${res.status} - ${errorText}`);
   }
 
+  if (res.status === 204) {
+    return {};
+  }
+
   return res.json();
 }
 
 // --- AUTH ---
 export async function loginUser(username, password) {
-  const res = await fetch(`${API_BASE}/login/`, {  
+  const res = await fetch(`${API_BASE}/login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
@@ -85,8 +89,8 @@ export async function signupUser({ username, password }) {
 }
 
 // --- JOBS (protected) ---
-export async function getJobs(query, limit = 50) {
-  return authFetch(`${API_BASE}/jobs/?q=${encodeURIComponent(query)}&limit=${limit}`);
+export async function getJobs(query, page = 1, limit = 10) {
+  return authFetch(`${API_BASE}/jobs/?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
 }
 
 // --- PROFILE (protected CRUD) ---
@@ -124,5 +128,30 @@ export async function deleteProfile(id) {
   return authFetch(`${API_BASE}/profile/${id}/`, {
     method: "DELETE",
   });
+}
+
+// --- RESUME PARSING ---
+export async function uploadResume(file) {
+  const formData = new FormData();
+  formData.append("resume", file);
+
+  // Note: Do NOT set Content-Type header manually for FormData, 
+  // let the browser set it with the boundary.
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_BASE}/resume/upload/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Upload failed: ${res.status} - ${errorText}`);
+  }
+
+  return res.json();
 }
 
