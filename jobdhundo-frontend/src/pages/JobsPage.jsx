@@ -7,6 +7,7 @@ import { getJobs } from "../api";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
+  const [totalJobs, setTotalJobs] = useState(0);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,20 +23,20 @@ export default function JobsPage() {
 
   useEffect(() => {
     setQuery(initialQuery);
-    fetchJobs(initialQuery, locationFilter, companyFilter);
-  }, [initialQuery, locationFilter, companyFilter]);
+    fetchJobs(initialQuery, currentPage, locationFilter, companyFilter);
+  }, [initialQuery, currentPage, locationFilter, companyFilter]);
 
-  async function fetchJobs(q, location = "", company = "") {
+  async function fetchJobs(q, page, location = "", company = "") {
     setLoading(true);
     setError("");
     try {
-      // assuming backend supports query params for location & company
       let urlQuery = q;
       if (location) urlQuery += ` location:${location}`;
       if (company) urlQuery += ` company:${company}`;
-      const data = await getJobs(urlQuery);
+
+      const data = await getJobs(urlQuery, page, jobsPerPage);
       setJobs(data.jobs || []);
-      setCurrentPage(1); // reset page when new data loads
+      setTotalJobs(data.count || 0);
     } catch {
       setError("Unable to fetch jobs.");
     } finally {
@@ -45,15 +46,15 @@ export default function JobsPage() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchJobs(query, locationFilter, companyFilter);
+    setCurrentPage(1); // Reset to page 1 for new search
+    fetchJobs(query, 1, locationFilter, companyFilter);
     navigate(`/jobs?q=${encodeURIComponent(query)}`);
   };
 
-  // Pagination slice
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  // Server-side pagination means we display all fetched jobs directly
+  const currentJobs = jobs;
+  // Cap at 10 pages maximum to keep loading low as requested
+  const totalPages = Math.min(Math.ceil(totalJobs / jobsPerPage), 10);
 
   const handlePrevPage = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
@@ -62,57 +63,59 @@ export default function JobsPage() {
     <div className="min-h-screen bg-bg text-text-main">
       <Navbar />
 
-      {/* Hero / Search */}
-      <div className="bg-gradient-to-b from-surface to-bg border-b border-border py-16 pt-6 pb-1 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight mb-4">
-            Explore Jobs
-          </h1>
-          <p className="text-text-muted text-lg mb-10">
-            Find the perfect role for your skills.
-          </p>
+      {/* Hero Section (Merged form Dashboard) */}
+      <div className="mx-4 mt-4 rounded-3xl bg-gradient-to-b from-surface to-bg border border-white/5 py-12 px-6 relative overflow-hidden shadow-2xl">
+        <div className="max-w-4xl mx-auto relative z-10">
 
-          <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input
-              className="w-full pl-14 pr-36 py-5 rounded-2xl border border-border shadow-soft focus:ring-4 focus:ring-primary-500/20 outline-none text-base"
-              placeholder="Job title, company, or keyword"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button className="absolute right-3 top-3 bottom-3 px-7 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 active:scale-95 transition">
-              Search
-            </button>
-          </form>
+          {/* Dotted Line Box Content */}
+          <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 md:p-12 bg-white/5 backdrop-blur-sm text-center">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3 text-white">
+              Find Jobs That Actually Match Your Skills
+            </h1>
+            <p className="text-slate-400 text-base mb-8 max-w-xl mx-auto">
+              Search verified jobs, track applications, and build your resume — all in one place.
+            </p>
 
-          {/* Filters */}
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
-            <div>
+            <form onSubmit={handleSearch} className="relative max-w-lg mx-auto">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 opacity-80" size={18} />
+              <input
+                className="w-full pl-10 pr-28 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-500/50 text-sm shadow-lg border-white/10"
+                placeholder="Job title, company, or keyword"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="absolute right-1.5 top-1.5 bottom-1.5 px-5 rounded-lg glass-button-primary text-xs font-bold active:scale-95 transition-all shadow-none hover:shadow-md">
+                Search
+              </button>
+            </form>
+
+            {/* Filters - Moved inside the dotted box for a cleaner look or just below */}
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
               <select
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="px-4 py-2 rounded-xl border border-border bg-surface"
+                className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 text-sm focus:bg-white/10 outline-none"
               >
-                <option value="">All Locations</option>
-                <option value="Remote">Remote</option>
-                <option value="New York">New York</option>
-                <option value="San Francisco">San Francisco</option>
-                <option value="London">London</option>
+                <option value="" className="bg-slate-900">All Locations</option>
+                <option value="Remote" className="bg-slate-900">Remote</option>
+                <option value="New York" className="bg-slate-900">New York</option>
+                <option value="San Francisco" className="bg-slate-900">San Francisco</option>
+                <option value="London" className="bg-slate-900">London</option>
               </select>
-            </div>
-            <div>
+
               <select
                 value={companyFilter}
                 onChange={(e) => setCompanyFilter(e.target.value)}
-                className="px-4 py-2 rounded-xl border border-border bg-surface"
+                className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 text-sm focus:bg-white/10 outline-none"
               >
-                <option value="">All Companies</option>
-                <option value="Google">Google</option>
-                <option value="Microsoft">Microsoft</option>
-                <option value="Amazon">Amazon</option>
+                <option value="" className="bg-slate-900">All Companies</option>
+                <option value="Google" className="bg-slate-900">Google</option>
+                <option value="Microsoft" className="bg-slate-900">Microsoft</option>
+                <option value="Amazon" className="bg-slate-900">Amazon</option>
               </select>
             </div>
           </div>
+
         </div>
       </div>
 
