@@ -5,25 +5,20 @@ import { signupUser } from "../api";
 export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (password !== confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
     setLoading(true);
     try {
       const data = await signupUser({ username, password });
-      if (data && data.id) {
+      if (data && data.message === "Account created successfully") {
         navigate("/login");
-      } else if (data && data.username) {
-        setError(data.username[0] || "Signup failed");
       } else {
         setError(data.error || "Signup failed");
       }
@@ -35,12 +30,18 @@ export default function SignupPage() {
     }
   };
 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full" style={{ maxWidth: 360 }}>
-        <div className="rounded-3xl border-2 p-4 shadow-lg" style={{ borderColor: "#19a974", borderRadius: 28 }}>
+        <div
+          className="rounded-3xl border-2 p-4 shadow-lg"
+          style={{ borderColor: "#19a974", borderRadius: 28, boxShadow: "0 14px 34px rgba(0,0,0,0.12)" }}
+        >
           <div className="text-center mb-3">
-            <span className="text-2xl sm:text-3xl font-semibold">Job<span style={{ color: "#19a974" }}>Dhundo</span></span>
+            <span className="text-2xl sm:text-3xl font-semibold">
+              Job<span style={{ color: "#19a974" }}>Dhundo</span>
+            </span>
           </div>
 
           <h4 className="text-center font-bold text-lg mb-1">Create Account</h4>
@@ -79,19 +80,6 @@ export default function SignupPage() {
               />
             </div>
 
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-              <input
-                type="password"
-                name="confirm"
-                className="w-full border rounded px-3 py-2 text-sm"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
-            </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -103,7 +91,9 @@ export default function SignupPage() {
           </form>
 
           <div className="text-center mt-3">
-            <a href="/login" className="text-sm" style={{ color: "#19a974" }}>Already have an account? Login</a>
+            <a href="/login" className="text-sm" style={{ color: "#19a974" }}>
+              Already have an account? Login
+            </a>
           </div>
         </div>
       </div>
