@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
+import { Edit2, Save, X, Github, Linkedin, Globe, MapPin, Calendar, User as UserIcon } from "lucide-react";
 
-export default function ProfileForm({ initialData, onSubmit, loading }) {
+export default function ProfileForm({ initialData, onSubmit, onToggleEdit, loading, editing }) {
   // Always initialize with empty strings to avoid "undefined" input errors
   const [formData, setFormData] = useState({
     full_name: "",
+    domain: "",
+    gender: "",
+    location: "",
+    birthday: "",
+    website: "",
+    github: "",
+    linkedin: "",
     summary: "",
     work: "",
     education: "",
@@ -14,6 +22,13 @@ export default function ProfileForm({ initialData, onSubmit, loading }) {
     if (initialData) {
       setFormData({
         full_name: initialData.full_name || "",
+        domain: initialData.domain || "",
+        gender: initialData.gender || "",
+        location: initialData.location || "",
+        birthday: initialData.birthday || "",
+        website: initialData.website || "",
+        github: initialData.github || "",
+        linkedin: initialData.linkedin || "",
         summary: initialData.summary || "",
         work: initialData.work || "",
         education: initialData.education || "",
@@ -28,41 +43,250 @@ export default function ProfileForm({ initialData, onSubmit, loading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    // Check and prepend https:// to URLs if needed
+    const processUrl = (url) => {
+      if (!url) return "";
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return `https://${url}`;
+      }
+      return url;
+    };
+
+    const finalData = {
+      ...formData,
+      website: processUrl(formData.website),
+      github: processUrl(formData.github),
+      linkedin: processUrl(formData.linkedin),
+    };
+
+    onSubmit(finalData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-sm border border-gray-200 rounded-xl p-6 w-full max-w-lg flex flex-col gap-4">
-      <h2 className="text-xl font-bold text-gray-800 mb-2">Edit Profile</h2>
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
-        <input name="full_name" type="text" value={formData.full_name} onChange={handleChange} className="border border-gray-200 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#10b981] outline-none" />
-      </div>
+        {/* Basic Info Section */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold text-primary-400 uppercase tracking-widest border-b border-white/5 pb-2 mb-2">Basic Info</h3>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold text-gray-500 uppercase">Summary</label>
-        <textarea name="summary" value={formData.summary} onChange={handleChange} className="border border-gray-200 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#10b981] outline-none" rows="3" />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Full Name</label>
+              <div className="relative">
+                <UserIcon size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="full_name"
+                  type="text"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="e.g. Alex Johnson"
+                />
+              </div>
+            </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold text-gray-500 uppercase">Work Experience</label>
-        <input name="work" type="text" value={formData.work} onChange={handleChange} className="border border-gray-200 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#10b981] outline-none" />
-      </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Domain / Job Title</label>
+              <input
+                disabled={!editing}
+                name="domain"
+                type="text"
+                value={formData.domain}
+                onChange={handleChange}
+                className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                placeholder="e.g. Frontend Developer"
+              />
+            </div>
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold text-gray-500 uppercase">Education</label>
-        <input name="education" type="text" value={formData.education} onChange={handleChange} className="border border-gray-200 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#10b981] outline-none" />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Gender</label>
+              <input
+                disabled={!editing}
+                name="gender"
+                type="text"
+                value={formData.gender}
+                onChange={handleChange}
+                className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                placeholder="e.g. Male/Female"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Location</label>
+              <div className="relative">
+                <MapPin size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="City, Country"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Birthday</label>
+              <div className="relative">
+                <Calendar size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="birthday"
+                  type="text"
+                  value={formData.birthday}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="DD/MM/YYYY"
+                />
+              </div>
+            </div>
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-bold text-gray-500 uppercase">Skills (Comma Separated)</label>
-        <input name="skills" type="text" value={formData.skills} onChange={handleChange} className="border border-gray-200 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#10b981] outline-none" />
-      </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Summary</label>
+            <textarea
+              disabled={!editing}
+              name="summary"
+              value={formData.summary}
+              onChange={handleChange}
+              className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all min-h-[80px] ${!editing ? "opacity-60 cursor-default" : ""}`}
+              rows="3"
+              placeholder="Brief professional summary..."
+            />
+          </div>
+        </div>
 
-      <button type="submit" disabled={loading} className="mt-4 px-4 py-3 bg-[#10b981] text-white font-bold rounded-lg hover:bg-[#059669] disabled:opacity-50 transition-colors">
-        {loading ? "Saving..." : "Update Profile"}
-      </button>
-    </form>
+        {/* Social Links */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold text-primary-400 uppercase tracking-widest border-b border-white/5 pb-2 mb-2">Social Links</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">GitHub</label>
+              <div className="relative">
+                <Github size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="github"
+                  type="text"
+                  value={formData.github}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="github.com/user"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">LinkedIn</label>
+              <div className="relative">
+                <Linkedin size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="linkedin"
+                  type="text"
+                  value={formData.linkedin}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="linkedin.com/in/user"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Website</label>
+              <div className="relative">
+                <Globe size={14} className="absolute left-3 top-3.5 text-slate-500" />
+                <input
+                  disabled={!editing}
+                  name="website"
+                  type="text"
+                  value={formData.website}
+                  onChange={handleChange}
+                  className={`w-full pl-9 pr-3 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+                  placeholder="your-portfolio.com"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {/* Professional Info */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold text-primary-400 uppercase tracking-widest border-b border-white/5 pb-2 mb-2">Professional Info</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Experience</label>
+              <textarea
+                disabled={!editing}
+                name="work"
+                value={formData.work}
+                onChange={handleChange}
+                className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all min-h-[100px] ${!editing ? "opacity-60 cursor-default" : ""}`}
+                placeholder="Work history..."
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Education</label>
+              <textarea
+                disabled={!editing}
+                name="education"
+                value={formData.education}
+                onChange={handleChange}
+                className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all min-h-[100px] ${!editing ? "opacity-60 cursor-default" : ""}`}
+                placeholder="Degrees..."
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Skills (Comma Separated)</label>
+            <input
+              disabled={!editing}
+              name="skills"
+              type="text"
+              value={formData.skills}
+              onChange={handleChange}
+              className={`w-full p-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all ${!editing ? "opacity-60 cursor-default" : ""}`}
+              placeholder="e.g. Python, React"
+            />
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-4 flex gap-3 sticky bottom-0 bg-bg/80 backdrop-blur-md p-2 rounded-t-2xl border-t border-white/5 z-20">
+          {editing ? (
+            <>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 py-3 glass-button-primary rounded-xl text-white text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20 active:scale-[0.98] transition-all"
+              >
+                {loading ? "Saving..." : <><Save size={16} /> Save Profile</>}
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleEdit(false)}
+                className="px-5 py-3 glass-button rounded-xl text-slate-300 text-sm font-bold hover:text-white flex items-center justify-center gap-2 transition-all"
+              >
+                <X size={16} /> Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onToggleEdit(true)}
+              className="w-full py-3 glass-button rounded-xl text-primary-300 text-sm font-bold hover:text-white hover:bg-primary-500/20 hover:border-primary-500/30 flex items-center justify-center gap-2 transition-all group"
+            >
+              <Edit2 size={16} className="group-hover:scale-110 transition-transform" /> Edit Profile
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }

@@ -27,109 +27,107 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { label: "Jobs", path: "/jobs" },
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Resume", path: "/resume" },
-    { label: "Profile", path: "/profile" },
+    { label: "JOBS", path: "/jobs" },
+    { label: "RESUME", path: "/resume" },
+    { label: "PROFILE", path: "/profile" },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-surface border-b border-border shadow-soft">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between py-3">
+    <nav className="sticky top-0 z-50 glass-panel">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between py-4">
           {/* Brand */}
-          <Link to="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-primary-600 flex items-center justify-center shadow-md">
-              <Briefcase size={20} className="text-white" />
+          <Link to="/jobs" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center border border-primary-500/30 shadow-glow group-hover:scale-105 transition-transform duration-300">
+              <Briefcase size={20} className="text-primary-400 group-hover:text-white transition-colors" />
             </div>
-            <span className="text-xl font-bold tracking-tight">
-              Job<span className="text-primary-600">Dhundo</span>
+            <span className="text-xl font-bold tracking-tight text-white group-hover:text-primary-300 transition-colors">
+              Job<span className="text-primary-500">Dhundo</span>
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-2">
-            {navItems.map((item) => {
-              const active = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition
-                    ${
-                      active
-                        ? "bg-primary-100 text-primary-700"
-                        : "text-text-muted hover:bg-bg hover:text-text-main"
-                    }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
+          <div className="flex items-center gap-6">
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-0">
+              {navItems.map((item) => {
+                const active = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300
+                      ${active
+                        ? "bg-primary-500/10 text-primary-300 border border-primary-500/20 shadow-glow"
+                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                      }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
 
-          {/* Right Section */}
-          <div className="flex items-center gap-3">
-            {token && (
-              <button className="hidden md:flex p-2 rounded-xl text-text-muted hover:bg-bg">
-                <Bell size={18} />
-              </button>
-            )}
+            {/* Right Section */}
+            <div className="flex items-center gap-3">
+              {token && (
+                <button className="hidden md:flex p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+                  <Bell size={20} />
+                </button>
+              )}
 
-            {token && (
-              <div className="hidden md:block relative group">
-                <div className="flex items-center gap-2 cursor-pointer">
-                  <img
-                    src={`https://ui-avatars.com/api/?name=${
-                      user.username || "User"
-                    }&background=059669&color=fff`}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-2xl border border-border"
-                  />
-                  <ChevronDown size={14} className="text-text-muted" />
-                </div>
+              {token && (
+                <div className="hidden md:block relative group">
+                  <div className="flex items-center gap-3 cursor-pointer">
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${user.username || "User"
+                        }&background=a855f7&color=fff&rounded=true`}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full border-2 border-white/10 group-hover:border-primary-500 transition-colors"
+                    />
+                    <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors" />
+                  </div>
 
-                <div className="absolute right-0 top-full pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                  <div className="w-52 bg-surface border border-border rounded-2xl shadow-card p-2">
-                    <button className="w-full flex items-center gap-2 px-4 py-2 text-sm rounded-xl hover:bg-bg">
-                      <Settings size={16} /> Settings
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 rounded-xl hover:bg-red-50"
-                    >
-                      <LogOut size={16} /> Logout
-                    </button>
+                  <div className="absolute right-0 top-full pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <div className="w-56 glass-card p-2 flex flex-col gap-1">
+                      <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 rounded-xl hover:bg-white/10 hover:text-white transition-colors">
+                        <Settings size={16} /> Settings
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-400 rounded-xl hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                      >
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 rounded-xl hover:bg-bg"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden p-2 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white"
+                onClick={() => setMobileOpen(!mobileOpen)}
+              >
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* MOBILE MENU */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-surface">
+        <div className="md:hidden glass-panel border-t border-white/5 animate-fade-in-down">
           <div className="px-4 py-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-3 rounded-xl font-medium
-                  ${
-                    location.pathname === item.path
-                      ? "bg-primary-100 text-primary-700"
-                      : "text-text-main hover:bg-bg"
+                className={`block px-4 py-3 rounded-xl font-medium transition-colors
+                  ${location.pathname === item.path
+                    ? "bg-primary-500/20 text-primary-300"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
                   }`}
               >
                 {item.label}
@@ -139,9 +137,9 @@ export default function Navbar() {
             {token && (
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 font-medium transition-colors"
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={18} /> Logout
               </button>
             )}
           </div>
