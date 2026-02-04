@@ -7,7 +7,7 @@ async function refreshToken() {
   const refresh = localStorage.getItem("refresh");
   if (!refresh) return false;
 
-  const res = await fetch(`${API_BASE}/token/refresh/`, {   // ✅ SimpleJWT default
+  const res = await fetch(`${API_BASE}/token/refresh/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refresh }),
@@ -68,7 +68,6 @@ export async function loginUser(username, password) {
   return res.json();
 }
 
-
 export async function signupUser({ username, password }) {
   const res = await fetch(`${API_BASE}/signup/`, {
     method: "POST",
@@ -85,17 +84,33 @@ export async function signupUser({ username, password }) {
   return data;
 }
 
-
 // --- JOBS (protected) ---
-export async function getJobs(query) {
-  return authFetch(`${API_BASE}/jobs/?q=${encodeURIComponent(query)}`);
+export async function getJobs(query, limit = 50) {
+  return authFetch(`${API_BASE}/jobs/?q=${encodeURIComponent(query)}&limit=${limit}`);
 }
 
-// --- PROFILE (protected) ---
+// --- PROFILE (protected CRUD) ---
+
+// Get all profiles (usually returns array)
+export async function getProfileList() {
+  return authFetch(`${API_BASE}/profile/`);
+}
+
+// Get single profile by ID
 export async function getProfile(id) {
   return authFetch(`${API_BASE}/profile/${id}/`);
 }
 
+// Create new profile
+export async function createProfile(data) {
+  return authFetch(`${API_BASE}/profile/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+}
+
+// Update existing profile
 export async function updateProfile(id, data) {
   return authFetch(`${API_BASE}/profile/${id}/`, {
     method: "PUT",
@@ -104,4 +119,10 @@ export async function updateProfile(id, data) {
   });
 }
 
+// Delete profile
+export async function deleteProfile(id) {
+  return authFetch(`${API_BASE}/profile/${id}/`, {
+    method: "DELETE",
+  });
+}
 

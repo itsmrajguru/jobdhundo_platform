@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Building2, Briefcase, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import { getJobs } from "../api";
 import Navbar from "../components/Navbar";
+import JobList from "../components/JobList";
 
 export default function DashboardPage() {
   const [jobs, setJobs] = useState([]);
@@ -24,8 +25,7 @@ export default function DashboardPage() {
     setLoading(true);
     setError("");
     try {
-      const token = localStorage.getItem("token") || "";
-      const data = await getJobs(q, token);
+      const data = await getJobs(q);
       setJobs(data.jobs || []);
     } catch {
       setError("Unable to reach the career server.");
@@ -38,8 +38,8 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-bg text-text-main">
       <Navbar />
 
-      {/* Hero */}
-      <div className="bg-gradient-to-b from-surface to-bg border-b border-border py-16 pt-6 pb-1 px-6 ">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-b from-surface to-bg border-b border-border py-16 pt-6 pb-1 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl font-extrabold tracking-tight mb-4">
             Your next career move starts here
@@ -69,65 +69,24 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto p-8 ">
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-xl font-bold">
-            {query ? `Results for "${query}"` : "Featured Opportunities"}
-          </h3>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-surface hover:bg-bg">
-            <Filter size={14} /> Filters
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto p-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-xl font-bold">Latest Opportunities</h3>
+          <button
+            onClick={() => navigate(`/jobs?q=${encodeURIComponent(query)}`)}
+            className="text-sm font-semibold text-primary-600 hover:underline"
+          >
+            View all jobs →
           </button>
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="h-52 bg-surface rounded-2xl animate-pulse" />
-            ))}
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600">
             {error}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {jobs.map((job, idx) => (
-              <div
-                key={job.id || idx}
-                className="bg-surface border border-border rounded-2xl p-6 shadow-soft hover:shadow-card transition-all hover:-translate-y-1 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center mb-4">
-                    <Building2 size={22} className="text-primary-600" />
-                  </div>
-
-                  <h4 className="font-bold text-lg mb-2">{job.title}</h4>
-
-                  <div className="text-sm text-text-muted flex gap-4 mb-4">
-                    <span className="flex items-center gap-1">
-                      <Building2 size={14} /> {job.company?.display_name || "Company"}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin size={14} /> {job.location?.display_name?.split(",")[0]}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-text-muted line-clamp-3">
-                    {job.description?.replace(/<[^>]*>/g, "")}
-                  </p>
-                </div>
-
-                <a
-                  href={job.redirect_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-text-main text-white hover:bg-neutral-800 transition"
-                >
-                  View Details <Briefcase size={16} />
-                </a>
-              </div>
-            ))}
-          </div>
+          <JobList jobs={jobs.slice(0, 6)} loading={loading} />
         )}
       </main>
     </div>

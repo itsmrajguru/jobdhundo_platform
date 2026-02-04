@@ -22,6 +22,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh");
     localStorage.removeItem("user");
+    setMobileOpen(false);
     navigate("/login");
   };
 
@@ -35,13 +36,13 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-surface border-b border-border shadow-soft">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex h-18 items-center justify-between py-3">
+        <div className="flex items-center justify-between py-3">
           {/* Brand */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/dashboard" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-primary-600 flex items-center justify-center shadow-md">
               <Briefcase size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold text-text-main tracking-tight">
+            <span className="text-xl font-bold tracking-tight">
               Job<span className="text-primary-600">Dhundo</span>
             </span>
           </Link>
@@ -54,7 +55,7 @@ export default function Navbar() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all
+                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition
                     ${
                       active
                         ? "bg-primary-100 text-primary-700"
@@ -67,19 +68,21 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Right */}
+          {/* Right Section */}
           <div className="flex items-center gap-3">
             {token && (
-              <button className="p-2 rounded-xl text-text-muted hover:bg-bg">
+              <button className="hidden md:flex p-2 rounded-xl text-text-muted hover:bg-bg">
                 <Bell size={18} />
               </button>
             )}
 
-            {token ? (
-              <div className="relative group">
+            {token && (
+              <div className="hidden md:block relative group">
                 <div className="flex items-center gap-2 cursor-pointer">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${user.username || "User"}&background=059669&color=fff`}
+                    src={`https://ui-avatars.com/api/?name=${
+                      user.username || "User"
+                    }&background=059669&color=fff`}
                     alt="Profile"
                     className="w-10 h-10 rounded-2xl border border-border"
                   />
@@ -100,17 +103,50 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-            ) : null}
+            )}
 
+            {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2"
+              className="md:hidden p-2 rounded-xl hover:bg-bg"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
       </div>
+
+      {/* MOBILE MENU */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-border bg-surface">
+          <div className="px-4 py-4 space-y-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-4 py-3 rounded-xl font-medium
+                  ${
+                    location.pathname === item.path
+                      ? "bg-primary-100 text-primary-700"
+                      : "text-text-main hover:bg-bg"
+                  }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            {token && (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50"
+              >
+                <LogOut size={16} /> Logout
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
