@@ -2,6 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-3xl;
+  }
+
+  .glass-panel {
+    @apply bg-[#0f172a]/60 backdrop-blur-xl border-b border-white/5 shadow-lg;
+  }
+
+  .glass-input {
+    @apply bg-black/20 border border-white/10 backdrop-blur-sm text-white placeholder-slate-500 rounded-xl transition-all font-mono;
+  }
+
+  .glass-input:focus {
+    @apply bg-black/40 outline-none;
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+    /* Soft Purple Ring */
+  }
+
+  .glass-button {
+    @apply bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition-all active:scale-95;
+  }
+
+  .glass-button-primary {
+    @apply text-white font-bold shadow-glow transition-all active:scale-95;
+    background-color: #a855f7;
+    /* primary-500 */
+  }
+
+  .glass-button-primary:hover {
+    background-color: #9333ea;
+    /* primary-600 */
+  }
 }
