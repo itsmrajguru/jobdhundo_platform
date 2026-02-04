@@ -25,7 +25,7 @@ export default function DashboardPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await getJobs(q);
+      const data = await getJobs(q, 1, 10); // Fetch page 1, limit 10
       setJobs(data.jobs || []);
     } catch {
       setError("Unable to reach the career server.");
@@ -35,37 +35,43 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-text-main">
+    <div className="min-h-screen bg-bg text-text-main pb-20">
       <Navbar />
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-b from-surface to-bg border-b border-border py-16 pt-6 pb-1 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight mb-4">
-            Your next career move starts here
-          </h1>
-          <p className="text-text-muted text-lg mb-10">
-            Discover verified roles from high-growth companies.
-          </p>
+      {/* Hero Section */}
+      <div className="mx-4 mt-4 rounded-3xl bg-gradient-to-b from-surface to-bg border border-white/5 py-12 px-6 relative overflow-hidden shadow-2xl">
+        <div className="max-w-3xl mx-auto relative z-10">
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              fetchJobs(query);
-            }}
-            className="relative max-w-2xl mx-auto"
-          >
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input
-              className="w-full pl-14 pr-36 py-5 rounded-2xl border border-border shadow-soft focus:ring-4 focus:ring-primary-500/20 outline-none text-base"
-              placeholder="Job title, company, or keyword"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button className="absolute right-3 top-3 bottom-3 px-7 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 active:scale-95 transition">
-              Search
-            </button>
-          </form>
+          {/* Dotted Line Box Content */}
+          <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 md:p-12 bg-white/5 backdrop-blur-sm text-center">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3 text-white">
+              Find Jobs That Actually Match Your Skills
+            </h1>
+            <p className="text-slate-400 text-base mb-8 max-w-xl mx-auto">
+              Search verified jobs, track applications, and build your resume — all in one place.
+            </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                fetchJobs(query);
+              }}
+              className="relative max-w-lg mx-auto"
+            >
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 opacity-80" size={18} />
+              <input
+                className="w-full pl-10 pr-28 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-500/50 text-sm shadow-lg border-white/10"
+                placeholder="Job title, company, or keyword"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="absolute right-1.5 top-1.5 bottom-1.5 px-5 rounded-lg glass-button-primary text-xs font-bold active:scale-95 transition-all shadow-none hover:shadow-md">
+                Search
+              </button>
+            </form>
+          </div>
+
         </div>
       </div>
 
@@ -86,7 +92,7 @@ export default function DashboardPage() {
             {error}
           </div>
         ) : (
-          <JobList jobs={jobs.slice(0, 6)} loading={loading} />
+          <JobList jobs={jobs} loading={loading} />
         )}
       </main>
     </div>

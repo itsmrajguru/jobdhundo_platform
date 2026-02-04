@@ -32,67 +32,71 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div
-        className="w-full"
-        style={{ maxWidth: 360 }}
-      >
-        <div
-          className="rounded-3xl border-2 p-4 shadow-lg"
-          style={{ borderColor: "#19a974", borderRadius: 28, boxShadow: "0 14px 34px rgba(0,0,0,0.12)" }}
-        >
-          <div className="text-center mb-3">
-            <span className="text-2xl sm:text-3xl font-semibold">Job<span style={{ color: "#19a974" }}>Dhundo</span></span>
+    <div className="min-h-screen flex items-center justify-center bg-bg px-4 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-5xl opacity-30 pointer-events-none">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-primary-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute bottom-20 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="glass-card p-10">
+          <div className="text-center mb-6">
+            <span className="text-2xl font-bold text-white tracking-tight">
+              Job<span className="text-primary-500">Dhundo</span>
+            </span>
+            <p className="text-slate-400 mt-1 text-sm">Welcome back! Please login to continue.</p>
           </div>
 
-          <h4 className="text-center font-bold text-lg mb-1">Welcome Back!</h4>
-          <h5 className="text-center text-sm text-gray-600 mb-4">Login</h5>
-
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded mb-4 text-sm">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm font-medium">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-slate-400 ml-1">Username</label>
               <input
                 type="text"
                 name="username"
-                className="w-full border rounded px-3 py-2 text-sm"
+                className="glass-input p-3.5 focus:ring-2 focus:ring-primary-500/50"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 autoComplete="username"
+                placeholder="Enter your username"
               />
             </div>
 
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-slate-400 ml-1">Password</label>
               <input
                 type="password"
                 name="password"
-                className="w-full border rounded px-3 py-2 text-sm"
+                className="glass-input p-3.5 focus:ring-2 focus:ring-primary-500/50"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
+                placeholder="••••••••"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 rounded-full text-white font-semibold"
-              style={{ backgroundColor: "#19a974" }}
+              className="mt-2 w-full py-3.5 rounded-xl glass-button-primary flex items-center justify-center gap-2"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          <div className="text-center mt-3">
-            <a href="/signup" className="text-sm" style={{ color: "#19a974" }}>Create Account</a>
+          <div className="text-center mt-8 text-sm text-slate-400">
+            Don't have an account?{" "}
+            <a href="/signup" className="text-primary-400 hover:text-primary-300 font-semibold transition-colors">
+              Create Account
+            </a>
           </div>
         </div>
       </div>
