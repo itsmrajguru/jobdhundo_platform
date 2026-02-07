@@ -1,6 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signupUser } from "../api";
+import { Link } from "react-router-dom"; // Add import
+
+// ...
+
+<div className="text-center mt-8 text-sm text-slate-400">
+  Already have an account?{" "}
+  <Link to="/login" className="text-primary-400 hover:text-primary-300 font-semibold transition-colors">
+    Login
+  </Link>
+</div>
 
 export default function SignupPage() {
   const [username, setUsername] = useState("");
