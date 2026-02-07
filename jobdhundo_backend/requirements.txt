@@ -8,3 +8,5 @@ dj-database-url
 whitenoise
 requests
 pypdf
+
+
