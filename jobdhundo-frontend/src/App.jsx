@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
@@ -13,7 +13,7 @@ import JobDetailsPage from "./pages/JobDetailsPage";
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -26,7 +26,7 @@ function App() {
         {/* Redirect old dashboard link if anyone tries to access it */}
         <Route path="/dashboard" element={<JobsPage />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

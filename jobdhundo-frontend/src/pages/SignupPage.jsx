@@ -1,13 +1,6 @@
-import { Link } from "react-router-dom"; // Add import
-
-// ...
-
-<div className="text-center mt-8 text-sm text-slate-400">
-  Already have an account?{" "}
-  <Link to="/login" className="text-primary-400 hover:text-primary-300 font-semibold transition-colors">
-    Login
-  </Link>
-</div>
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { signupUser } from "../api";
 
 export default function SignupPage() {
   const [username, setUsername] = useState("");
@@ -16,41 +9,41 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
+  useEffect(() => {
+    console.log("SignupPage Mounted");
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting signup form...");
     setError("");
     setLoading(true);
     try {
       const data = await signupUser({ username, password });
+      console.log("Signup response:", data);
       if (data && data.message === "Account created successfully") {
         navigate("/login");
       } else {
         setError(data.error || "Signup failed");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Signup Error:", err);
       setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg px-4 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-5xl opacity-30 pointer-events-none">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-primary-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-        <div className="absolute bottom-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 relative overflow-hidden text-white">
+      {/* Simplified Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 pointer-events-none"></div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="glass-card p-10">
+        <div className="bg-slate-800/50 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl">
           <div className="text-center mb-6">
             <span className="text-2xl font-bold text-white tracking-tight">
-              Job<span className="text-primary-500">Dhundo</span>
+              Job<span className="text-purple-500">Dhundo</span>
             </span>
             <p className="text-slate-400 mt-1 text-sm">Sign up to find your next opportunity.</p>
           </div>
@@ -67,7 +60,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 name="username"
-                className="glass-input p-3.5 focus:ring-2 focus:ring-primary-500/50"
+                className="w-full bg-black/20 border border-white/10 p-3.5 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -81,7 +74,7 @@ export default function SignupPage() {
               <input
                 type="password"
                 name="password"
-                className="glass-input p-3.5 focus:ring-2 focus:ring-primary-500/50"
+                className="w-full bg-black/20 border border-white/10 p-3.5 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -93,7 +86,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full py-3.5 rounded-xl glass-button-primary flex items-center justify-center gap-2"
+              className="mt-2 w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {loading ? "Creating Account..." : "Create Account"}
             </button>
@@ -101,9 +94,9 @@ export default function SignupPage() {
 
           <div className="text-center mt-8 text-sm text-slate-400">
             Already have an account?{" "}
-            <a href="/login" className="text-primary-400 hover:text-primary-300 font-semibold transition-colors">
+            <Link to="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
               Login
-            </a>
+            </Link>
           </div>
         </div>
       </div>
