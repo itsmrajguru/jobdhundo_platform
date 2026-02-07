@@ -28,11 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-^hst*&%bn83*n^@21xpk6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "https://jobdhundo-backend-1t97.onrender.com",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
