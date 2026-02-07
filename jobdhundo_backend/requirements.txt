@@ -1,7 +1,7 @@
 Django>=5.0,<6.1
 djangorestframework
+djangorestframework-simplejwt
 django-cors-headers
-# Production specific
 gunicorn
 psycopg2-binary
 dj-database-url
