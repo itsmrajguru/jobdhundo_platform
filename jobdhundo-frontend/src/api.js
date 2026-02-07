@@ -1,6 +1,7 @@
 // src/api.js
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api"; // no trailing slash
+const API_BASE_RAW = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const API_BASE = API_BASE_RAW.replace(/\/$/, ""); // ensure no trailing slash
 
 // --- REFRESH TOKEN ---
 async function refreshToken() {
