@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, MapPin, Building, Clock, Briefcase, Share2, ExternalLink } from "lucide-react";
+import { ArrowLeft, MapPin, Building, Clock, Briefcase, Share2, Linkedin, ExternalLink } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 export default function JobDetailsPage() {
@@ -160,13 +160,11 @@ export default function JobDetailsPage() {
                     </div>
 
                     <div className="flex w-full sm:w-auto gap-3">
-
-
                         <button
                             onClick={handleApply}
                             className="flex-1 sm:flex-none px-8 py-3 glass-button-primary rounded-xl text-white font-bold text-sm shadow-glow flex items-center justify-center gap-2"
                         >
-                            Apply on Company Site <ExternalLink size={16} />
+                            Apply at {job.company.display_name} <ExternalLink size={16} />
                         </button>
                     </div>
                 </div>

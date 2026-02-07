@@ -46,7 +46,7 @@ export default function ResumePage() {
             <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                        AI Resume <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-400">Scanner</span>
+                        ATS<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-400"> Checker</span>
                     </h1>
                     <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
                         Upload your resume to check your ATS score, identify missing skills, and get instant feedback to improve your job applications.

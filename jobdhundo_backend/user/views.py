@@ -51,8 +51,11 @@ def jobs_api(request):
     query = request.GET.get("q", "").strip()
     page = int(request.GET.get("page", 1))
     limit = int(request.GET.get("limit", 10))
-    
-    data = search_jobs(query, page, limit)
+    country = request.GET.get("country", "in") # Default to India
+    max_days_old = int(request.GET.get("days", 30)) # Relaxed to 30 days to include diverse/relevant jobs
+    sort_by = request.GET.get("sort", "relevance") # Default to relevance to find best matches (LinkedIn, NTT, etc.)
+
+    data = search_jobs(query, page, limit, country=country, sort_by=sort_by, max_days_old=max_days_old)
     return Response({
         "jobs": data.get("results", []),
         "count": data.get("count", 0)
